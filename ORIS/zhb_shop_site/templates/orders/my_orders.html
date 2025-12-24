@@ -1,0 +1,43 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <title>Title</title>
+</head>
+<body>
+    {% extends "base.html" %}
+
+    {% block content %}
+    <div class="container">
+        <h1 class="mb-4">Мои заказы</h1>
+
+        {% if orders %}
+            <div class="list-group">
+                {% for order in orders %}
+                <div class="list-group-item">
+                    <div class="d-flex w-100 justify-content-between">
+                        <h5 class="mb-1">Заказ #{{ order.id }}: {{ order.product_name }}</h5>
+                        <span class="badge bg-info">Получен</span>
+                    </div>
+                    <p class="mb-1">
+                        <strong>Количество:</strong> {{ order.quantity }} шт.<br>
+                        <strong>Цена за шт.:</strong> {{ "%.2f"|format(order.price) }} руб.<br>
+                        <strong>Итого:</strong> {{ "%.2f"|format(order.price * order.quantity) }} руб.
+                    </p>
+                    <small class="text-muted">
+                        Телефон: {{ order.contact_phone }} |
+                        Создан: {{ order.created_at.strftime('%d.%m.%Y %H:%M') }}
+                    </small>
+                </div>
+                {% endfor %}
+            </div>
+        {% else %}
+            <div class="alert alert-info">
+                У вас пока нет заказов.
+                <a href="/products">Перейти в каталог</a>
+            </div>
+        {% endif %}
+    </div>
+    {% endblock %}
+</body>
+</html>

@@ -1,0 +1,43 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <title>Title</title>
+</head>
+<body>
+{% extends "base.html" %}
+
+{% block content %}
+<div class="container">
+    <div class="row justify-content-center">
+        <div class="col-md-6">
+            <h2>Оформление заказа</h2>
+            <div class="card mb-3">
+                <div class="card-body">
+                    <h5>{{ product.name }}</h5>
+                    <p>{{ product.description }}</p>
+                    <p><strong>Цена: {{ "%.2f"|format(product.price) }} руб.</strong></p>
+                </div>
+            </div>
+
+            <form method="POST">
+                <div class="mb-3">
+                    <label class="form-label">Количество:</label>
+                    <input type="number" name="quantity" class="form-control" value="1" min="1" required>
+                </div>
+                <div class="mb-3">
+                    <label class="form-label">Ваш телефон:</label>
+                    <input type="tel" name="phone" class="form-control" placeholder="+7 (900) 123-45-67" required>
+                </div>
+                <div class="mb-3">
+                    <label class="form-label">Комментарий к заказу:</label>
+                    <textarea name="comment" class="form-control" rows="3" placeholder="Дополнительные пожелания..."></textarea>
+                </div>
+                <button type="submit" class="btn btn-success w-100">Подтвердить заказ</button>
+            </form>
+        </div>
+    </div>
+</div>
+{% endblock %}
+</body>
+</html>

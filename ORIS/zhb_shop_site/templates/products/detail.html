@@ -1,0 +1,153 @@
+{% extends "base.html" %}
+
+{% block content %}
+<div class="container mt-4">
+    <div class="row">
+        <div class="col-md-8">
+            <nav aria-label="breadcrumb">
+                <ol class="breadcrumb">
+                    <li class="breadcrumb-item"><a href="/">Главная</a></li>
+                    <li class="breadcrumb-item"><a href="/products">Каталог</a></li>
+                    <li class="breadcrumb-item active">{{ product.name }}</li>
+                </ol>
+            </nav>
+
+            <h1>{{ product.name }}</h1>
+            <p class="lead text-muted">{{ product.description }}</p>
+
+            <div class="mb-4">
+                {% if product.image_url %}
+                    <img src="{{ product.image_url }}"
+                         class="img-fluid rounded"
+                         alt="{{ product.name }}"
+                         style="max-height: 400px; object-fit: contain;">
+                {% else %}
+                    <div class="bg-light rounded d-flex align-items-center justify-content-center" style="height: 300px;">
+                        <span class="text-muted">Изображение отсутствует</span>
+                    </div>
+                {% endif %}
+            </div>
+
+            <div class="card">
+                <div class="card-header">
+                    <h5 class="mb-0">Характеристики</h5>
+                </div>
+                <div class="card-body">
+                    <ul class="list-unstyled">
+                        <li><strong>Цена:</strong> <span class="text-primary fs-4">{{ "%.2f"|format(product.price) }} руб.</span></li>
+                        <li><strong>Категории:</strong>
+                            {% if categories %}
+                                {% for cat in categories %}
+                                    <span class="badge bg-secondary">{{ cat.name }}</span>
+                                {% endfor %}
+                            {% else %}
+                                <span class="text-muted">Нет категорий</span>
+                            {% endif %}
+                        </li>
+                        <li><strong>Артикул:</strong> #{{ product.id }}</li>
+                        <li><strong>Добавлено:</strong>
+                            {% if product.created_at %}
+                                {{ product.created_at.strftime('%d.%m.%Y') }}
+                            {% else %}
+                                Не указано
+                            {% endif %}
+                        </li>
+                    </ul>
+                    {% if session.username and is_admin %}
+                    <div class="mt-3">
+                        <a href="/product/{{ product.id }}/edit" class="btn btn-warning btn-sm"> Редактировать</a>
+                        <form method="POST" action="/product/{{ product.id }}/delete"
+                              class="d-inline"
+                              onsubmit="return confirm('Вы уверены, что хотите удалить товар «{{ product.name }}»? Это действие нельзя отменить!');">
+                            <button type="submit" class="btn btn-danger btn-sm ms-2"> Удалить</button>
+                        </form>
+                    </div>
+                    {% endif %}
+                </div>
+            </div>
+
+        <div class="col-md-4">
+            <div class="card shadow-lg border-0 sticky-top" style="top: 20px;">
+                <div class="card-header bg-primary text-white">
+                    <h5 class="mb-0">Оформить заказ</h5>
+                </div>
+                <div class="card-body">
+                    <div class="mb-3">
+                        <label for="quantity" class="form-label">Количество (шт.):</label>
+                        <input type="number" id="quantity" class="form-control" value="1" min="1" max="1000">
+                    </div>
+
+                    <div class="mb-3">
+                        <button class="btn btn-outline-primary w-100" onclick="calculateTotal()">
+                            Рассчитать стоимость
+                        </button>
+                    </div>
+
+                    <div id="result" class="alert alert-info" style="display: none;">
+                    </div>
+
+                    <hr>
+
+                    {% if session.username %}
+                        <form method="POST" action="/order/{{ product.id }}">
+                            <div class="mb-3">
+                                <label for="order_quantity" class="form-label">Количество для заказа:</label>
+                                <input type="number" name="quantity" class="form-control" value="1" min="1" required>
+                            </div>
+                            <div class="mb-3">
+                                <label for="phone" class="form-label">Ваш телефон:</label>
+                                <input type="tel" name="phone" class="form-control" placeholder="+7 (900) 123-45-67" required>
+                            </div>
+                            <div class="mb-3">
+                                <label for="address" class="form-label">Адрес доставки (если нужна):</label>
+                                <textarea name="address" class="form-control" rows="2" placeholder="Город, улица, дом"></textarea>
+                            </div>
+                            <button type="submit" class="btn btn-success w-100 py-2">
+                                Оставить заявку на звонок
+                            </button>
+                            <p class="text-muted small mt-2">
+                                После отправки заявки наш менеджер свяжется с вами для уточнения деталей
+                            </p>
+                        </form>
+                    {% else %}
+                        <div class="alert alert-warning">
+                            <p>Чтобы оформить заказ, необходимо войти в систему.</p>
+                            <div class="d-grid gap-2">
+                                <a href="/login" class="btn btn-primary">Войти</a>
+                                <a href="/register" class="btn btn-outline-primary">Зарегистрироваться</a>
+                            </div>
+                        </div>
+                    {% endif %}
+                </div>
+            </div>
+        </div>
+    </div>
+</div>
+
+<script>
+function calculateTotal() {
+    const quantity = parseInt(document.getElementById('quantity').value);
+    const pricePerItem = {{ product.price }};
+    const total = pricePerItem * quantity;
+
+    const resultDiv = document.getElementById('result');
+    resultDiv.innerHTML = `
+    <h5>Итого: <strong>${total.toFixed(2)} руб.</strong></h5>
+    <p class="mb-0 small">
+        ${pricePerItem.toFixed(2)} руб. × ${quantity} шт.
+        ${quantity >= 10 ? '<br><span class="text-success">Оптовая скидка доступна при заказе от 10 шт.</span>' : ''}
+    </p>
+`;
+    resultDiv.style.display = 'block';
+
+    const orderQuantity = document.querySelector('input[name="quantity"]');
+    if (orderQuantity) {
+        orderQuantity.value = quantity;
+    }
+}
+
+document.getElementById('quantity').addEventListener('input', calculateTotal);
+
+window.onload = calculateTotal;
+</script>
+{% endblock %}

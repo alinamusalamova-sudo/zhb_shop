@@ -1,0 +1,146 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <title>Title</title>
+</head>
+<body>
+{% extends "base.html" %}
+
+{% block content %}
+  <div class="container mt-4">
+      <div class="d-flex justify-content-between align-items-center mb-4">
+          <h1>Панель администратора</h1>
+          <div class="badge bg-primary fs-6">Админ: {{ session.username }}</div>
+      </div>
+
+      <div class="row mb-4">
+          <div class="col-md-4">
+              <div class="card text-white bg-primary">
+                  <div class="card-body">
+                      <h5 class="card-title">Пользователи</h5>
+                      <p class="card-text display-6">{{ users_count }}</p>
+                  </div>
+              </div>
+          </div>
+          <div class="col-md-4">
+              <div class="card text-white bg-success">
+                  <div class="card-body">
+                      <h5 class="card-title">Товары</h5>
+                      <p class="card-text display-6">{{ products_count }}</p>
+                  </div>
+              </div>
+          </div>
+          <div class="col-md-4">
+              <div class="card text-white bg-warning">
+                  <div class="card-body">
+                      <h5 class="card-title">Заказы</h5>
+                      <p class="card-text display-6">{{ orders_count }}</p>
+                  </div>
+              </div>
+          </div>
+      </div>
+
+      <div class="card mb-4">
+          <div class="card-header bg-info text-white">
+              <h5 class="mb-0">Быстрые действия</h5>
+          </div>
+          <div class="card-body">
+              <div class="d-flex flex-wrap gap-2">
+                  <a href="/product/new" class="btn btn-success">Добавить товар</a>
+                  <a href="/products" class="btn btn-primary">Все товары</a>
+                  <a href="/" class="btn btn-secondary">На главную</a>
+              </div>
+          </div>
+      </div>
+
+      <div class="card mb-4">
+          <div class="card-header">
+              <h5 class="mb-0"></h5>
+          </div>
+          <div class="card-body">
+              {% if orders %}
+                  <div class="table-responsive">
+                      <table class="table table-hover">
+                          <thead>
+                              <tr>
+                                  <th>ID</th>
+                                  <th>Товар</th>
+                                  <th>Клиент</th>
+                                  <th>Кол-во</th>
+                                  <th>Статус</th>
+                                  <th>Дата</th>
+                              </tr>
+                          </thead>
+                          <tbody>
+                              {% for order in orders[:10] %}
+                              <tr>
+                                  <td>#{{ order.id }}</td>
+                                  <td>{{ order.product_name }}</td>
+                                  <td>{{ order.customer_name }}</td>
+                                  <td>{{ order.quantity }} шт.</td>
+                                  <td>
+                                      <span class="badge bg-info">Получен</span>
+                                  </td>
+                                  <td>{{ order.created_at.strftime('%d.%m.%Y') }}</td>
+                              </tr>
+                              {% endfor %}
+                          </tbody>
+                      </table>
+                  </div>
+              {% else %}
+                  <p class="text-muted">Заказов пока нет</p>
+              {% endif %}
+          </div>
+      </div>
+
+      <div class="card">
+          <div class="card-header">
+              <h5 class="mb-0"></h5>
+          </div>
+          <div class="card-body">
+              {% if users %}
+                  <div class="table-responsive">
+                      <table class="table table-hover">
+                          <thead>
+                              <tr>
+                                  <th>ID</th>
+                                  <th>Имя</th>
+                                  <th>Email</th>
+                                  <th>Роль</th>
+                                  <th>Дата регистрации</th>
+                              </tr>
+                          </thead>
+                          <tbody>
+                              {% for user in users %}
+                              <tr>
+                                  <td>{{ user.id }}</td>
+                                  <td>
+                                      {{ user.username }}
+                                      {% if user.username == 'admin' %}
+                                          <span class="badge bg-danger">Админ</span>
+                                      {% endif %}
+                                  </td>
+                                  <td>{{ user.email }}</td>
+                                  <td>
+                                      {% if user.username == 'admin' %}
+                                          <span class="badge bg-danger">admin</span>
+                                      {% else %}
+                                          <span class="badge bg-secondary">{{ user.role or 'customer' }}</span>
+                                      {% endif %}
+                                  </td>
+                                  <td>{{ user.created_at.strftime('%d.%m.%Y') }}</td>
+                              </tr>
+                              {% endfor %}
+                          </tbody>
+                      </table>
+                  </div>
+              {% else %}
+                  <p class="text-muted">Пользователей пока нет</p>
+              {% endif %}
+          </div>
+      </div>
+  </div>
+  {% endblock %}
+</body>
+</html>
