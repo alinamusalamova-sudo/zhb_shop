@@ -1,0 +1,207 @@
+<!DOCTYPE html>
+<html lang="ru">
+<head>
+    <meta charset="UTF-8">
+    <title>Калькулькатор</title>
+    <link href="https://fonts.googleapis.com/css2?family=Nunito:wght@300;400;500;600&display=swap" rel="stylesheet">
+    <style>
+        body {
+            font-family: 'Nunito', sans-serif;
+            background-color: #fff5f7;
+            margin: 0;
+            padding: 20px;
+        }
+
+        h1 {
+            text-align: center;
+            color: #db2777;
+            margin-bottom: 40px;
+            font-size: 32px;
+            font-weight: 600;
+        }
+
+        .calc-container {
+            max-width: 500px;
+            margin: 0 auto;
+            background: white;
+            border-radius: 20px;
+            padding: 30px;
+            box-shadow: 0 8px 25px rgba(251, 182, 206, 0.3);
+        }
+
+        .form-group {
+            margin-bottom: 20px;
+        }
+
+        label {
+            display: block;
+            color: #db2777;
+            margin-bottom: 8px;
+            font-weight: 500;
+            font-size: 16px;
+        }
+
+        input, select {
+            width: 100%;
+            padding: 12px 15px;
+            border: 2px solid #fce7f3;
+            border-radius: 10px;
+            font-size: 16px;
+            font-family: 'Nunito', sans-serif;
+            box-sizing: border-box;
+            transition: all 0.3s;
+        }
+
+        input:focus, select:focus {
+            outline: none;
+            border-color: #f472b6;
+            box-shadow: 0 0 0 3px rgba(244, 114, 182, 0.2);
+        }
+
+        .row {
+            display: flex;
+            gap: 15px;
+            margin-bottom: 20px;
+        }
+
+        .row .form-group {
+            flex: 1;
+            margin-bottom: 0;
+        }
+
+        .submit-btn {
+            width: 100%;
+            padding: 15px;
+            background-color: #f472b6;
+            color: white;
+            border: none;
+            border-radius: 10px;
+            font-size: 18px;
+            font-weight: 600;
+            cursor: pointer;
+            transition: all 0.3s;
+            margin-top: 10px;
+        }
+
+        .submit-btn:hover {
+            background-color: #db2777;
+            transform: translateY(-3px);
+            box-shadow: 0 5px 15px rgba(219, 39, 119, 0.3);
+        }
+
+        .result-box {
+            margin-top: 30px;
+            padding: 20px;
+            border-radius: 12px;
+            text-align: center;
+            font-size: 18px;
+        }
+
+        .success {
+            background-color: #f0fdf4;
+            border: 2px solid #86efac;
+            color: #166534;
+        }
+
+        .error {
+            background-color: #fef2f2;
+            border: 2px solid #fca5a5;
+            color: #dc2626;
+        }
+
+        .result-value {
+            font-weight: 600;
+            font-size: 22px;
+            color: #db2777;
+            margin-top: 5px;
+        }
+
+        .home-link {
+            display: block;
+            text-align: center;
+            margin-top: 40px;
+            color: #db2777;
+            text-decoration: none;
+            font-size: 18px;
+            font-weight: 600;
+            padding: 14px 30px;
+            border: 2px solid #f472b6;
+            border-radius: 12px;
+            width: 220px;
+            margin-left: auto;
+            margin-right: auto;
+            transition: all 0.3s;
+            background-color: white;
+        }
+
+        .home-link:hover {
+            background-color: #fce7f3;
+            color: #be185d;
+            border-color: #db2777;
+            transform: translateY(-3px);
+        }
+
+        .example {
+            text-align: center;
+            color: #888;
+            font-size: 14px;
+            margin-top: 15px;
+            font-style: italic;
+        }
+    </style>
+</head>
+<body>
+    <h1>Калькулятор</h1>
+
+    <div class="calc-container">
+        <form method="GET" action="/calc">
+            <div class="row">
+                <div class="form-group">
+                    <label for="a">Первое число (a):</label>
+                    <input type="number" step="any" id="a" name="a" placeholder="Введите число"
+                           value="{% if a is not none %}{{ a }}{% endif %}">
+                </div>
+
+                <div class="form-group">
+                    <label for="b">Второе число (b):</label>
+                    <input type="number" step="any" id="b" name="b" placeholder="Введите число"
+                           value="{% if b is not none %}{{ b }}{% endif %}">
+                </div>
+            </div>
+
+            <div class="form-group">
+                <label for="op">Операция:</label>
+                <select id="op" name="op">
+                    <option value="+" {% if op == '+' %}selected{% endif %}>Сложение (+)</option>
+                    <option value="-" {% if op == '-' %}selected{% endif %}>Вычитание (-)</option>
+                    <option value="*" {% if op == '*' %}selected{% endif %}>Умножение (×)</option>
+                    <option value="/" {% if op == '/' %}selected{% endif %}>Деление (÷)</option>
+                </select>
+            </div>
+
+            <button type="submit" class="submit-btn">Вычислить</button>
+        </form>
+
+        {% if result is not none %}
+        <div class="result-box success">
+            Результат:
+            <div class="result-value">
+                {{ a }} {{ op }} {{ b }} = {{ result }}
+            </div>
+        </div>
+        {% endif %}
+
+        {% if error %}
+        <div class="result-box error">
+            {{ error }}
+        </div>
+        {% endif %}
+
+        <div class="example">
+            Пример: 5 + 3 = 8
+        </div>
+    </div>
+
+    <a href="/" class="home-link">На главную</a>
+</body>
+</html>

@@ -1,0 +1,74 @@
+<!DOCTYPE html>
+<html lang="ru">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Цитаты</title>
+    <style>
+        body {
+            font-family: 'Georgia', serif;
+            display: flex;
+            justify-content: center;
+            align-items: center;
+            height: 100vh;
+            background: linear-gradient(135deg, #f5e6e6 0%, #e8d3d3 100%);
+            margin: 0;
+        }
+        .quote-box {
+            border: 3px solid #8B0000;
+            border-radius: 15px;
+            padding: 40px;
+            text-align: center;
+            background-color: #FFF8F0;
+            max-width: 700px;
+            width: 80%;
+            box-shadow: 0 10px 30px rgba(139, 0, 0, 0.2);
+            position: relative;
+        }
+        .quote-box:before {
+            content: "❝";
+            font-size: 60px;
+            color: #D4AF37; /* Золотой */
+            position: absolute;
+            top: -30px;
+            left: 20px;
+        }
+        .quote-text {
+            font-size: 1.9em;
+            margin-bottom: 30px;
+            color: #5D4037;
+            font-style: italic;
+            line-height: 1.6;
+        }
+        button {
+            padding: 12px 25px;
+            font-size: 1.1em;
+            background: linear-gradient(to right, #8B0000, #A52A2A);
+            color: white;
+            border: none;
+            border-radius: 8px;
+            cursor: pointer;
+            transition: all 0.3s ease;
+            font-weight: bold;
+            letter-spacing: 0.5px;
+        }
+        button:hover {
+            background: linear-gradient(to right, #A52A2A, #8B0000);
+            transform: translateY(-3px);
+            box-shadow: 0 5px 15px rgba(139, 0, 0, 0.3);
+        }
+        .subtitle {
+            color: #666;
+            font-size: 0.9em;
+            margin-top: 15px;
+            font-style: italic;
+        }
+    </style>
+</head>
+<body>
+    <div class="quote-box">
+        <p class="quote-text">«{{ quote }}»</p>
+        <button onclick="location.reload()">Получить новую цитату из Отчаянных домохозяек</button>
+    </div>
+</body>
+</html>
